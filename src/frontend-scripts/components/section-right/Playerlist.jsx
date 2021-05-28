@@ -2,7 +2,7 @@ import React, { createRef } from 'react';
 import { connect } from 'react-redux';
 import { fetchProfile } from '../../actions/actions';
 import cn from 'classnames';
-import { PLAYERCOLORS } from '../../constants';
+import { getNumberWithOrdinal, PLAYERCOLORS } from '../../constants';
 import $ from 'jquery';
 import Modal from 'semantic-ui-modal';
 import classnames from 'classnames';
@@ -279,8 +279,11 @@ class Playerlist extends React.Component {
 						: cn({ blacklisted: gameSettings && gameSettings.blacklist.includes(user.userName) }, 'username');
 				const renderStatus = () => {
 					const status = user.status;
+					const userIsStaff = Boolean(
+						Object.keys(user).length && user.staffRole && user.staffRole !== 'trialmod' && user.staffRole !== 'altmod' && user.staffRole !== 'veteran'
+					);
 
-					if (!status || status.type === 'none') {
+					if (!status || status.type === 'none' || (status.type === 'observing' && userIsStaff && !isStaff)) {
 						return <i className={'status unclickable icon'} />;
 					} else {
 						const iconClasses = classnames(
@@ -364,13 +367,19 @@ class Playerlist extends React.Component {
 								this.renderPreviousSeasonAward(user.previousSeasonAward)}
 							{!(gameSettings && Object.keys(gameSettings).length && gameSettings.disableCrowns) &&
 								user.specialTournamentStatus &&
-								user.specialTournamentStatus === '4captain' && (
-									<span title="This player was the captain of the winning team of the 5th Official Tournament." className="crown-captain-icon" />
+								user.specialTournamentStatus.slice(1) === 'captain' && (
+									<span
+										title={`This player a Captain of the winning team of the ${getNumberWithOrdinal(user.specialTournamentStatus[0])} Official Tournament.`}
+										className="crown-captain-icon"
+									/>
 								)}
 							{!(gameSettings && Object.keys(gameSettings).length && gameSettings.disableCrowns) &&
 								user.specialTournamentStatus &&
-								user.specialTournamentStatus === '4' && (
-									<span title="This player was part of the winning team of the 5th Official Tournament." className="crown-icon" />
+								user.specialTournamentStatus.slice(1) === 'tourney' && (
+									<span
+										title={`This player was part of the winning team of the ${getNumberWithOrdinal(user.specialTournamentStatus[0])} Official Tournament.`}
+										className="crown-icon"
+									/>
 								)}
 							{user.staffRole !== 'admin' &&
 								Boolean(!user.staffDisableVisibleElo) &&
@@ -499,8 +508,11 @@ class Playerlist extends React.Component {
 						: cn({ blacklisted: gameSettings && gameSettings.blacklist.includes(user.userName) }, 'username');
 				const renderStatus = () => {
 					const status = user.status;
+					const userIsStaff = Boolean(
+						Object.keys(user).length && user.staffRole && user.staffRole !== 'trialmod' && user.staffRole !== 'altmod' && user.staffRole !== 'veteran'
+					);
 
-					if (!status || status.type === 'none') {
+					if (!status || status.type === 'none' || (status.type === 'observing' && userIsStaff && !isStaff)) {
 						return null;
 					} else {
 						const iconClasses = classnames(
@@ -547,13 +559,19 @@ class Playerlist extends React.Component {
 								this.renderPreviousSeasonAward(user.previousSeasonAward)}
 							{!(gameSettings && Object.keys(gameSettings).length && gameSettings.disableCrowns) &&
 								user.specialTournamentStatus &&
-								user.specialTournamentStatus === '4captain' && (
-									<span title="This player was the captain of the winning team of the 5th Official Tournament." className="crown-captain-icon" />
+								user.specialTournamentStatus.slice(1) === 'captain' && (
+									<span
+										title={`This player a Captain of the winning team of the ${getNumberWithOrdinal(user.specialTournamentStatus[0])} Official Tournament.`}
+										className="crown-captain-icon"
+									/>
 								)}
 							{!(gameSettings && Object.keys(gameSettings).length && gameSettings.disableCrowns) &&
 								user.specialTournamentStatus &&
-								user.specialTournamentStatus === '4' && (
-									<span title="This player was part of the winning team of the 5th Official Tournament." className="crown-icon" />
+								user.specialTournamentStatus.slice(1) === 'tourney' && (
+									<span
+										title={`This player was part of the winning team of the ${getNumberWithOrdinal(user.specialTournamentStatus[0])} Official Tournament.`}
+										className="crown-icon"
+									/>
 								)}
 							{(() => {
 								const userAdminRole = user.staffIncognito
