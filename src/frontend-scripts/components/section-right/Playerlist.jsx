@@ -279,8 +279,11 @@ class Playerlist extends React.Component {
 						: cn({ blacklisted: gameSettings && gameSettings.blacklist.includes(user.userName) }, 'username');
 				const renderStatus = () => {
 					const status = user.status;
+					const userIsStaff = Boolean(
+						Object.keys(user).length && user.staffRole && user.staffRole !== 'trialmod' && user.staffRole !== 'altmod' && user.staffRole !== 'veteran'
+					);
 
-					if (!status || status.type === 'none') {
+					if (!status || status.type === 'none' || (status.type === 'observing' && userIsStaff && !isStaff)) {
 						return <i className={'status unclickable icon'} />;
 					} else {
 						const iconClasses = classnames(
@@ -505,8 +508,11 @@ class Playerlist extends React.Component {
 						: cn({ blacklisted: gameSettings && gameSettings.blacklist.includes(user.userName) }, 'username');
 				const renderStatus = () => {
 					const status = user.status;
+					const userIsStaff = Boolean(
+						Object.keys(user).length && user.staffRole && user.staffRole !== 'trialmod' && user.staffRole !== 'altmod' && user.staffRole !== 'veteran'
+					);
 
-					if (!status || status.type === 'none') {
+					if (!status || status.type === 'none' || (status.type === 'observing' && userIsStaff && !isStaff)) {
 						return null;
 					} else {
 						const iconClasses = classnames(
